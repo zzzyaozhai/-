@@ -1,0 +1,6 @@
+{
+  "appId": "com.mechanics.pro",
+  "appName": "材料力学Pro",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
