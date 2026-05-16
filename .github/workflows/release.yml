@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm ci || npm install
@@ -32,9 +32,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release to GitHub
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: release-v${{ github.run_number }}
+          name: MechanicsApp Release v${{ github.run_number }}
           files: release/*.exe
           fail_on_unmatched_files: false
           generate_release_notes: true
