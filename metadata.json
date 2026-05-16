@@ -1,0 +1,6 @@
+{
+  "name": "材料力学：压杆稳定实验",
+  "description": "基于晾衣杆等实际工程案例的压杆稳定（材料力学）虚拟仿真与计算教学工具",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
