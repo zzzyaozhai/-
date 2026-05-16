@@ -1,19 +1,19 @@
-name: Build and Release
+name: Build and Release EXE
 
 on:
   push:
     branches:
       - main
     tags:
-      - 'v*' # Trigger on tags like v1.0
-  workflow_dispatch: # Allow manual trigger from the Actions tab
+      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,21 +26,20 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
 
-      - name: Build Web App
-        run: npm run build
-
-      - name: Create Portable Zip
-        run: cd dist && zip -r ../MechanicsApp-Portable-Web.zip ./*
+      - name: Build Web App and EXE
+        run: npm run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: MechanicsApp-Portable-Web.zip
+          files: release/*.exe
           fail_on_unmatched_files: false
           generate_release_notes: true
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (Optional)
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
         with:
