@@ -293,18 +293,18 @@ export function BeamSimulator(props: BeamSimulatorProps) {
   const legendMax = props.material.sigma_s;
 
   return (
-    <div className="relative w-full h-full bg-slate-50 flex flex-col" ref={containerRef}>
+    <div className="relative w-full h-full bg-slate-900 flex flex-col" ref={containerRef}>
        <div className="absolute top-4 left-4 z-10 flex flex-col space-y-1">
-          <div className="text-sm font-semibold text-slate-700">
-             {props.viewMode === 'stress' ? '冯·米塞斯应力 (Von Mises)' : '等效应变 (Equivalent Strain)'}
-             {yieldFlag && <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold animate-pulse">屈服警告!</span>}
+          <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest">
+             {props.viewMode === 'stress' ? '冯·米塞斯应力 / Von Mises Stress' : '等效应变 / Equivalent Strain'}
+             {yieldFlag && <span className="ml-2 px-2 py-0.5 bg-red-500 text-white rounded-full text-[8px] font-bold animate-pulse">YIELD!</span>}
           </div>
-          <div className="w-64 h-4 rounded shadow-sm border border-slate-300" 
+          <div className="w-48 h-1.5 rounded-full overflow-hidden shadow-sm border border-white/10" 
                style={{ background: 'linear-gradient(to right, rgb(0,0,255), rgb(0,255,255), rgb(0,255,0), rgb(255,255,0), rgb(255,0,0))' }}>
           </div>
-          <div className="flex justify-between w-64 text-xs text-slate-500 font-mono">
+          <div className="flex justify-between w-48 text-[8px] text-white/40 font-mono font-bold">
             <span>0</span>
-            <span>{props.viewMode === 'stress' ? (legendMax / 1e6).toFixed(1) + ' MPa' : (legendMax / props.material.E).toExponential(2)}</span>
+            <span>{props.viewMode === 'stress' ? (legendMax / 1e6).toFixed(1) + ' MPa' : (legendMax / props.material.E * 1000).toFixed(3) + ' mε'}</span>
           </div>
        </div>
        
