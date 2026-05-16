@@ -70,332 +70,256 @@ export function MechanicsApp() {
   if (!results) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-6 pb-20 select-none overflow-y-auto">
-      <div className="max-w-7xl mx-auto flex flex-col">
+    <div className="min-h-screen bg-neutral-900 text-slate-900 font-sans flex items-center justify-center p-0 md:p-8 select-none">
+      {/* Mobile Frame / APK Style Container */}
+      <div className="w-full h-[100dvh] md:w-[420px] md:h-[840px] md:max-h-[90vh] bg-slate-50 md:rounded-[3rem] md:shadow-2xl overflow-hidden relative flex flex-col border-0 md:border-[12px] border-slate-900 shadow-blue-500/20">
         
-        {/* Header */}
-        <header className="flex justify-between items-end mb-6 border-b-2 border-slate-900 pb-2">
-          <div>
-            <h1 className="text-2xl font-black uppercase tracking-tighter">
-              压杆稳定虚拟实验 <span className="text-blue-600">/ 晾衣杆承载力分析</span>
-            </h1>
-            <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mt-1">
-              基于材料力学原理，探究影响细长压杆稳定性的关键因素
-            </p>
-          </div>
-          <div className="hidden sm:flex gap-4 mb-1">
-            <div className="px-3 py-1 bg-slate-900 text-white text-[10px] font-bold rounded-sm">LAB READY</div>
-            <div className="px-3 py-1 border border-slate-900 text-[10px] font-bold rounded-sm">CASE: CLOTHES_POLE_01</div>
-          </div>
-        </header>
-
-        {/* Interactive Simulator Top Row */}
-        <div className="bg-white border-2 border-slate-900 rounded-xl mb-4 overflow-hidden relative shadow-sm" style={{ height: '320px' }}>
-          <BeamSimulator 
-            length={length}
-            section={{ type: sectionType, D, d, H }}
-            material={results.material}
-            supportId={supportId}
-            pointLoadMagnitude={appliedLoad}
-            pointLoadPosition={loadPos}
-            onPositionChange={setLoadPos}
-            uniformLoad={windLoad}
-            axialLoad={axialLoad}
-            viewMode={viewMode}
-          />
-          <div className="absolute top-4 right-4 flex bg-white/90 backdrop-blur-sm border border-slate-300 rounded overflow-hidden shadow-sm">
-            <button 
-              className={`px-3 py-1 text-xs font-bold ${viewMode === 'stress' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
-              onClick={() => setViewMode('stress')}
-            >应力</button>
-            <button 
-              className={`px-3 py-1 text-xs font-bold ${viewMode === 'strain' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
-              onClick={() => setViewMode('strain')}
-            >应变</button>
+        {/* Status Bar Placeholder (Hidden on small mobile screens to use native) */}
+        <div className="hidden md:flex h-8 w-full bg-slate-50 justify-between items-center px-8 pt-4 shrink-0">
+          <div className="text-[10px] font-black text-slate-400">9:41</div>
+          <div className="flex gap-1.5 items-center">
+             <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+             <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+             <div className="w-4 h-2 rounded-[2px] border border-slate-300 relative">
+                <div className="absolute inset-x-0.5 inset-y-0.5 bg-slate-400 rounded-[1px]"></div>
+             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow">
-          
-          {/* Left Column: Inputs */}
-          <div className="lg:col-span-4 flex flex-col gap-4">
-            <section className="bg-white border-2 border-slate-900 rounded-xl p-4">
-              <h2 className="text-xs font-black uppercase tracking-widest mb-4 border-l-4 border-slate-900 pl-2">参数设置 / Parameters</h2>
-
-              {/* Material */}
-              <div className="mb-4">
-                <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">材质选择</label>
-                <select 
-                  value={materialId} 
-                  onChange={e => setMaterialId(e.target.value)}
-                  className="w-full rounded border border-slate-300 shadow-sm focus:ring-slate-900 focus:border-slate-900 text-sm font-mono p-2 bg-white text-slate-900"
-                >
-                  {materials.map(m => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                </select>
-                <div className="text-[10px] font-mono text-slate-600 mt-1 bg-slate-100 p-2 rounded">
-                  E = {(results.material.E/1e9).toFixed(1)} GPa, 
-                  屈服强度 = {(results.material.sigma_s/1e6).toFixed(0)} MPa
-                </div>
+        {/* Header */}
+        <header className="px-5 py-4 bg-white border-b border-slate-100 flex justify-between items-center shrink-0 z-20">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+               <Scale size={18} />
+            </div>
+            <div>
+              <h1 className="text-sm font-black uppercase tracking-tight">材料力学 Pro</h1>
+              <div className="text-[8px] font-bold text-blue-600 tracking-widest flex items-center gap-1">
+                <span className="w-1 h-1 bg-blue-600 rounded-full animate-pulse"></span>
+                SYSTEM ACTIVE
               </div>
-
-              {/* Support */}
-              <div className="mb-4">
-                <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">约束条件</label>
-                <select 
-                  value={supportId} 
-                  onChange={e => setSupportId(e.target.value)}
-                  className="w-full rounded border border-slate-300 shadow-sm focus:ring-slate-900 focus:border-slate-900 text-sm font-mono p-2 bg-white text-slate-900"
-                >
-                  {supports.map(s => (
-                    <option key={s.id} value={s.id}>{s.name} (μ={s.mu})</option>
-                  ))}
-                </select>
-                <p className="text-[10px] text-slate-500 mt-1">{results.support.desc}</p>
-              </div>
-
-              {/* Length */}
-              <div className="mb-4">
-                <label className="flex justify-between text-[10px] font-bold text-slate-700 uppercase mb-1">
-                  <span>杆长 L (m)</span>
-                  <span className="text-blue-600 font-bold font-mono">{length.toFixed(2)} m</span>
-                </label>
-                <input 
-                  type="range" min="0.5" max="5.0" step="0.1" 
-                  value={length} onChange={e => setLength(parseFloat(e.target.value))}
-                  className="w-full accent-blue-600 bg-slate-200 h-1 rounded-full appearance-none outline-none"
-                />
-              </div>
-
-              {/* Section */}
-              <div className="mb-4 border-t border-slate-100 pt-4">
-                <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">截面形状</label>
-                <select 
-                  value={sectionType} 
-                  onChange={e => setSectionType(e.target.value as any)}
-                  className="w-full rounded border border-slate-300 shadow-sm focus:ring-slate-900 focus:border-slate-900 text-sm font-mono p-2 mb-3 bg-white text-slate-900"
-                >
-                  <option value="hollow-circle">空心圆管 (常见晾衣杆)</option>
-                  <option value="solid-circle">实心圆杆</option>
-                  <option value="solid-rect">实心矩形</option>
-                </select>
-
-                {sectionType === 'hollow-circle' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-600 mb-1">外径 D (mm)</label>
-                      <input type="number" value={D*1000} onChange={e => setD(parseFloat(e.target.value)/1000)} className="w-full border border-slate-300 p-1 rounded text-sm font-mono"/>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-600 mb-1">内径 d (mm)</label>
-                      <input type="number" value={d*1000} onChange={e => setd(parseFloat(e.target.value)/1000)} className="w-full border border-slate-300 p-1 rounded text-sm font-mono"/>
-                    </div>
-                  </div>
-                )}
-                {sectionType === 'solid-circle' && (
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-600 mb-1">直径 D (mm)</label>
-                    <input type="number" value={D*1000} onChange={e => setD(parseFloat(e.target.value)/1000)} className="w-full border border-slate-300 p-1 rounded text-sm font-mono"/>
-                  </div>
-                )}
-                {sectionType === 'solid-rect' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-600 mb-1">宽 (mm)</label>
-                      <input type="number" value={D*1000} onChange={e => setD(parseFloat(e.target.value)/1000)} className="w-full border border-slate-300 p-1 rounded text-sm font-mono"/>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-600 mb-1">高 (mm)</label>
-                      <input type="number" value={H*1000} onChange={e => setH(parseFloat(e.target.value)/1000)} className="w-full border border-slate-300 p-1 rounded text-sm font-mono"/>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Load */}
-              <div className="mb-2 border-t border-slate-100 pt-4">
-                <label className="flex justify-between text-[10px] font-bold text-slate-700 uppercase mb-1">
-                  <span>衣物重量 (横向集中载荷) W (N)</span>
-                  <span className="text-orange-500 font-bold font-mono">{appliedLoad.toFixed(0)} N</span>
-                </label>
-                <div className="text-[10px] text-slate-500 mb-2 font-mono">约相当于 {(appliedLoad/9.81).toFixed(1)} kg 的衣物重量</div>
-                <input 
-                  type="range" min="10" max="1000" step="10" 
-                  value={appliedLoad} onChange={e => setAppliedLoad(parseFloat(e.target.value))}
-                  className="w-full accent-orange-500 bg-slate-200 h-1 rounded-full appearance-none outline-none mb-4"
-                />
-
-                <label className="flex justify-between text-[10px] font-bold text-slate-700 uppercase mb-1">
-                  <span>风载荷 (横向均布载荷) q (N/m)</span>
-                  <span className="text-sky-500 font-bold font-mono">{windLoad.toFixed(0)} N/m</span>
-                </label>
-                <input 
-                  type="range" min="0" max="500" step="10" 
-                  value={windLoad} onChange={e => setWindLoad(parseFloat(e.target.value))}
-                  className="w-full accent-sky-500 bg-slate-200 h-1 rounded-full appearance-none outline-none mb-4"
-                />
-
-                <label className="flex justify-between text-[10px] font-bold text-slate-700 uppercase mb-1">
-                  <span>轴向端部压力 P (N)</span>
-                  <span className="text-red-500 font-bold font-mono">{axialLoad.toFixed(0)} N</span>
-                </label>
-                <div className="text-[10px] text-slate-500 mb-2 font-mono">(顶在墙壁上的预紧力导致的由于压杆失稳的载荷)</div>
-                <input 
-                  type="range" min="0" max="50000" step="100" 
-                  value={axialLoad} onChange={e => setAxialLoad(parseFloat(e.target.value))}
-                  className="w-full accent-red-500 bg-slate-200 h-1 rounded-full appearance-none outline-none"
-                />
-              </div>
-
-            </section>
+            </div>
           </div>
+          <div className="flex gap-2">
+            <a 
+              href="/Mechanics_Offline_App.html" 
+              download="Mechanics_Offline_App.html"
+              title="下载离线版"
+              className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 transition-colors"
+            >
+              <Wind size={18} />
+            </a>
+            <button className="p-2 bg-slate-50 text-slate-400 rounded-xl">
+              <Settings size={18} />
+            </button>
+          </div>
+        </header>
 
-          {/* Right Column: Visualization & Results */}
-          <div className="lg:col-span-8 flex flex-col gap-4">
-            
-            {/* Main Result Card */}
-            <section className="bg-white border-2 border-slate-900 rounded-xl p-4 flex flex-col sm:flex-row gap-6 items-center">
-              <div className="flex-1 w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xs font-black uppercase tracking-widest border-l-4 border-blue-600 pl-2">压杆稳定计算结果 / Buckling Verdict</h2>
-                  <span className="font-mono text-[10px] text-slate-400">REF: EULER-STABILITY</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="border border-slate-300 bg-slate-50 p-3 rounded text-center">
-                    <div className="text-[10px] font-bold text-slate-500 uppercase">临界压力 <InlineMath math="F_{cr}" /></div>
-                    <div className="text-lg font-black text-slate-900 mt-1 font-mono">{(results.F_cr / 1000).toFixed(2)} <span className="text-[10px] font-normal text-slate-500">kN</span></div>
-                  </div>
-                  <div className="border border-slate-300 bg-slate-50 p-3 rounded text-center">
-                    <div className="text-[10px] font-bold text-slate-500 uppercase">临界应力 <InlineMath math="\sigma_{cr}" /></div>
-                    <div className="text-lg font-black text-slate-900 mt-1 font-mono">{(results.sigma_cr / 1e6).toFixed(1)} <span className="text-[10px] font-normal text-slate-500">MPa</span></div>
-                  </div>
-                  <div className="border border-slate-300 bg-slate-50 p-3 rounded text-center">
-                    <div className="text-[10px] font-bold text-slate-500 uppercase">柔度 <InlineMath math="\lambda" /></div>
-                    <div className="text-lg font-black text-slate-900 mt-1 font-mono">{results.lambda.toFixed(1)}</div>
-                  </div>
-                  <div className={`p-3 border-2 rounded flex flex-col items-center justify-center text-center ${results.safety_factor >= 2.0 ? 'bg-green-400 border-green-500 text-slate-900' : results.safety_factor >= 1.0 ? 'bg-yellow-400 border-yellow-500 text-slate-900' : 'bg-red-500 border-red-600 text-white'}`}>
-                    <div className="text-[10px] font-bold uppercase opacity-90">轴向稳定安全系数 <InlineMath math="n_{st}" /></div>
-                    <div className="text-2xl font-black mt-1 font-mono leading-none">
-                      {results.safety_factor > 999 ? '>999' : results.safety_factor.toFixed(2)}
-                    </div>
-                    <div className="text-[10px] mt-1 font-bold tracking-widest uppercase">
-                      {results.safety_factor >= 2.0 ? 'STABLE' : results.safety_factor >= 1.0 ? 'MARGINAL' : 'FAIL'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Analysis Tabs & Chart */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow">
-              
-              <section className="bg-white border-2 border-slate-900 rounded-xl p-4 flex flex-col">
-                <h2 className="text-xs font-black uppercase tracking-widest mb-4 border-l-4 border-blue-600 pl-2">临界应力图象 / Curve</h2>
-                <div className="flex-grow min-h-[200px] w-full text-xs font-mono">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={curveData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                      <XAxis 
-                        dataKey="lambda" 
-                        type="number" 
-                        domain={[0, 'dataMax']} 
-                        label={{ value: '柔度 λ', position: 'bottom', offset: 0, fill: '#64748B' }} 
-                        stroke="#94A3B8"
-                      />
-                      <YAxis 
-                        label={{ value: '临界应力 σcr (MPa)', angle: -90, position: 'insideLeft', fill: '#64748B' }} 
-                        stroke="#94A3B8"
-                      />
-                      <RechartsTooltip formatter={(value: number) => [`${value.toFixed(1)} MPa`, '临界应力']} contentStyle={{ backgroundColor: '#1E293B', color: '#F8FAFC', border: 'none', borderRadius: '4px', fontSize: '10px', fontFamily: 'monospace' }} />
-                      <ReferenceLine x={results.lambda_p} stroke="#94A3B8" strokeDasharray="3 3" label={{ position: 'top', value: 'λp', fill: '#94A3B8', fontSize: 10 }} />
-                      <ReferenceLine x={results.lambda_s} stroke="#94A3B8" strokeDasharray="3 3" label={{ position: 'top', value: 'λs', fill: '#94A3B8', fontSize: 10 }} />
-                      <ReferenceLine x={results.lambda} stroke="#F97316" label={{ position: 'insideBottomRight', value: '当前杆件', fill: '#F97316', fontSize: 10 }} />
-                      <ReferenceLine y={results.sigma_cr / 1e6} stroke="#F97316" strokeDasharray="3 3" />
-                      <Line type="monotone" dataKey="sigma" stroke="#2563EB" strokeWidth={2} dot={false} isAnimationActive={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-2 text-[10px] text-slate-600 bg-slate-100 p-2 rounded border border-slate-200">
-                  <span className="font-bold uppercase">状态结论: </span> 
-                  {results.bucklingType === 'large' ? '大柔度杆，适用欧拉公式。' : 
-                   results.bucklingType === 'medium' ? '中等柔度杆，适用经验直线公式。' : 
-                   '小柔度杆，发生强度屈服，不发生失稳。'}
-                </div>
-              </section>
-
-              <section className="bg-slate-900 text-slate-200 border-2 border-slate-900 rounded-xl p-4 overflow-y-auto max-h-[500px]">
-                <div className="sticky top-0 bg-slate-900 pb-2 mb-4 z-10">
-                  <h2 className="text-xs font-black uppercase tracking-widest border-l-4 border-orange-500 pl-2">计算与分析过程 / Analysis</h2>
-                </div>
-                
-                <div className="space-y-3 text-[11px] font-mono leading-relaxed">
-                  
-                  <div className="p-3 bg-white/5 rounded border border-white/10">
-                    <p className="text-[10px] text-orange-400 mb-1 tracking-tighter">Step 01: 几何截面性质计算</p>
-                    <p>
-                      A {sectionType === 'hollow-circle' ? <InlineMath math="= \frac{\pi(D^2 - d^2)}{4}" /> : null} 
-                      = {(results.A * 1e4).toFixed(2)} cm²
-                    </p>
-                    <p>
-                      I: {(results.I * 1e8).toFixed(2)} cm⁴，
-                      i = <InlineMath math="\sqrt{\frac{I}{A}}" /> = {(results.i * 1e2).toFixed(2)} cm
-                    </p>
-                  </div>
-
-                  <div className="p-3 bg-white/5 rounded border border-white/10">
-                    <p className="text-[10px] text-orange-400 mb-1 tracking-tighter">Step 02: 柔度计算与杆件分类</p>
-                    <p>
-                      <InlineMath math="l_0" /> = <InlineMath math="\mu l" /> = {results.support.mu} × {length} = {results.l0.toFixed(2)} m
-                    </p>
-                    <p>
-                      <InlineMath math="\lambda" /> = <InlineMath math="\frac{l_0}{i}" /> = {results.lambda.toFixed(1)}
-                    </p>
-                    <div className="my-2 border-l-2 border-slate-600 pl-2 text-slate-400">
-                      材料极限柔度: <InlineMath math="\lambda_p" /> = {results.lambda_p.toFixed(1)}, <InlineMath math="\lambda_s" /> = {results.lambda_s.toFixed(1)}
-                    </div>
-                    <p className="text-blue-400 flex flex-wrap items-center gap-1 font-bold">
-                      {results.bucklingType === 'large' && <><InlineMath math="\lambda \ge \lambda_p" />，大柔度杆</>}
-                      {results.bucklingType === 'medium' && <><InlineMath math="\lambda_s \le \lambda < \lambda_p" />，中柔度杆</>}
-                      {results.bucklingType === 'small' && <><InlineMath math="\lambda < \lambda_s" />，小柔度杆</>}
-                    </p>
-                  </div>
-
-                  <div className="p-3 bg-white/5 rounded border border-white/10">
-                    <p className="text-[10px] text-orange-400 mb-1 tracking-tighter">Step 03: 临界载荷计算</p>
-                    {results.bucklingType === 'large' && (
-                      <div>适用欧拉公式：<BlockMath math="\sigma_{cr} = \frac{\pi^2 E}{\lambda^2}" /></div>
-                    )}
-                    {results.bucklingType === 'medium' && (
-                      <div>经验折线公式：<BlockMath math="\sigma_{cr} = a - b\lambda" /></div>
-                    )}
-                    {results.bucklingType === 'small' && (
-                      <div>不发生失稳：<BlockMath math="\sigma_{cr} = \sigma_s" /></div>
-                    )}
-                    <p className="font-bold text-white mt-1">
-                      <InlineMath math="\sigma_{cr}" /> = {(results.sigma_cr / 1e6).toFixed(1)} MPa
-                    </p>
-                    <p className="font-bold text-white">
-                      <InlineMath math="F_{cr}" /> = {(results.F_cr / 1000).toFixed(2)} kN
-                    </p>
-                  </div>
-
-                  <div className="p-3 bg-white/5 rounded border border-white/10">
-                    <p className="text-[10px] text-orange-400 mb-1 tracking-tighter">Step 04: 稳定性校核</p>
-                    <p className="text-slate-400 mb-1">
-                      给定载荷 F = {appliedLoad} N, 材料自重为 {results.self_weight.toFixed(1)} N。
-                    </p>
-                    <p className="text-lg font-bold text-white">
-                      <InlineMath math="n_{st} = \frac{F_{cr}}{F}" /> = <span className={results.safety_factor >= 2.0 ? 'text-green-400' : 'text-red-400'}>{results.safety_factor.toFixed(2)}</span>
-                    </p>
-                  </div>
-
-                </div>
-              </section>
-
+        {/* Main Content Area (Scrollable) */}
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 bg-[#F8FAFC]">
+          
+          {/* Simulator Visualizer Card */}
+          <div className="bg-slate-900 rounded-[2.5rem] p-0 overflow-hidden relative shadow-2xl shadow-blue-900/20 border border-white/5" style={{ height: '260px' }}>
+             <BeamSimulator 
+              length={length}
+              section={{ type: sectionType, D, d, H }}
+              material={results.material}
+              supportId={supportId}
+              pointLoadMagnitude={appliedLoad}
+              pointLoadPosition={loadPos}
+              onPositionChange={setLoadPos}
+              uniformLoad={windLoad}
+              axialLoad={axialLoad}
+              viewMode={viewMode}
+            />
+            <div className="absolute top-4 right-4 flex bg-black/40 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 p-1">
+              <button 
+                className={`px-4 py-1.5 text-[9px] font-black uppercase rounded-xl transition-all ${viewMode === 'stress' ? 'bg-white text-slate-900 shadow-sm' : 'text-white/60'}`}
+                onClick={() => setViewMode('stress')}
+              >应力</button>
+              <button 
+                className={`px-4 py-1.5 text-[9px] font-black uppercase rounded-xl transition-all ${viewMode === 'strain' ? 'bg-white text-slate-900 shadow-sm' : 'text-white/60'}`}
+                onClick={() => setViewMode('strain')}
+              >应变</button>
             </div>
           </div>
 
+          {/* KPI Dashboard */}
+          <div className="grid grid-cols-2 gap-4">
+             <div className={`p-5 rounded-[2rem] flex flex-col items-center justify-center text-center shadow-lg transition-colors duration-500 ${results.safety_factor >= 2.0 ? 'bg-emerald-500 text-white shadow-emerald-500/20' : results.safety_factor >= 1.0 ? 'bg-amber-400 text-slate-900 shadow-amber-400/20' : 'bg-rose-500 text-white shadow-rose-500/20'}`}>
+                <div className="text-[9px] font-black uppercase opacity-70 mb-1 tracking-widest">安全指数</div>
+                <div className="text-4xl font-black font-mono leading-none tracking-tighter">
+                  {results.safety_factor > 99 ? 'MAX' : results.safety_factor.toFixed(1)}
+                </div>
+                <div className="text-[9px] mt-2 font-black bg-black/10 px-3 py-1 rounded-full uppercase tracking-widest">
+                  {results.safety_factor >= 2.0 ? 'STABLE' : results.safety_factor >= 1.0 ? 'WARNING' : 'CRITICAL'}
+                </div>
+              </div>
+
+              <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col justify-center relative overflow-hidden group">
+                 <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full scale-150 opacity-50 group-hover:scale-175 transition-transform"></div>
+                 <div className="relative">
+                   <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">临界载荷</div>
+                   <div className="text-2xl font-black text-slate-900 font-mono tracking-tighter">{(results.F_cr / 1000).toFixed(2)} <span className="text-[10px] text-slate-400 font-medium">kN</span></div>
+                   <div className="mt-2 text-[8px] text-blue-600 font-bold uppercase tracking-tighter">
+                      {results.bucklingType === 'large' ? 'Euler Standard' : results.bucklingType === 'medium' ? 'Linear Empirical' : 'Plastic Yield'}
+                   </div>
+                 </div>
+              </div>
+          </div>
+
+          {/* Control Center */}
+          <section className="space-y-4">
+            <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
+               <div className="flex justify-between items-center mb-6">
+                 <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">控制中心 / UI Control</h3>
+                 <div className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[8px] font-bold rounded-md">LIVE SYNC</div>
+               </div>
+               
+               <div className="space-y-6">
+                  <div className="group">
+                    <div className="flex justify-between text-[10px] font-black mb-3">
+                      <span className="text-slate-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">杆件长度 (Length)</span>
+                      <span className="text-blue-600 font-mono bg-blue-50 px-2 py-0.5 rounded-md">{length.toFixed(2)}m</span>
+                    </div>
+                    <input 
+                      type="range" min="0.5" max="5.0" step="0.1" 
+                      value={length} onChange={e => setLength(parseFloat(e.target.value))}
+                      className="w-full accent-blue-600 h-2 rounded-full bg-slate-100 appearance-none outline-none cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-[10px] font-black">
+                      <span className="text-slate-400 uppercase tracking-widest">材质选择 (Material)</span>
+                      <span className="text-slate-900 font-mono">CODE: {results.material.id}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                       {materials.map(m => (
+                         <button 
+                           key={m.id}
+                           onClick={() => setMaterialId(m.id)}
+                           className={`px-4 py-3 text-[10px] font-black rounded-2xl border-2 transition-all duration-300 transform active:scale-95 ${materialId === m.id ? 'bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/30' : 'bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100'}`}
+                         >
+                           {m.name}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
+
+                  <div className="group">
+                    <div className="flex justify-between text-[10px] font-black mb-3">
+                      <span className="text-slate-400 uppercase tracking-widest group-hover:text-orange-500 transition-colors">横向载荷 (Point Load)</span>
+                      <span className="text-orange-500 font-mono bg-orange-50 px-2 py-0.5 rounded-md">{appliedLoad}N</span>
+                    </div>
+                    <input 
+                      type="range" min="10" max="1000" step="10" 
+                      value={appliedLoad} onChange={e => setAppliedLoad(parseFloat(e.target.value))}
+                      className="w-full accent-orange-500 h-2 rounded-full bg-slate-100 appearance-none outline-none cursor-pointer"
+                    />
+                    <div className="mt-2 text-[8px] text-slate-400 font-bold uppercase text-right">EQUIV: {(appliedLoad/9.81).toFixed(1)}kg</div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Support Config Card */}
+            <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
+               <div className="flex justify-between items-center mb-4">
+                 <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">约束边界 / Edge Conditions</h3>
+               </div>
+               <div className="grid grid-cols-2 gap-3">
+                  {supports.map(s => (
+                    <button 
+                      key={s.id}
+                      onClick={() => setSupportId(s.id)}
+                      className={`p-4 rounded-[1.5rem] border-2 text-left transition-all duration-300 relative overflow-hidden group/btn ${supportId === s.id ? 'bg-blue-50 border-blue-600' : 'bg-slate-50 border-transparent hover:bg-slate-100'}`}
+                    >
+                      {supportId === s.id && <div className="absolute right-2 top-2 w-1.5 h-1.5 bg-blue-600 rounded-full"></div>}
+                      <div className={`text-[10px] font-black tracking-tight ${supportId === s.id ? 'text-blue-700' : 'text-slate-500'}`}>{s.name}</div>
+                      <div className="text-[9px] font-mono text-slate-400 mt-1">μ = {s.mu}</div>
+                    </button>
+                  ))}
+               </div>
+            </div>
+
+            {/* Analysis Stats (Dark Mode Card) */}
+            <div className="bg-slate-900 text-white p-7 rounded-[3rem] shadow-2xl shadow-slate-900/40 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full -mr-10 -mt-10 blur-3xl"></div>
+               <h3 className="text-[10px] font-black mb-6 uppercase tracking-widest text-blue-400 border-l-2 border-blue-500 pl-3">核心计算参数 / Core Stats</h3>
+               <div className="space-y-5 font-mono text-[10px]">
+                  <div className="flex justify-between items-baseline group">
+                    <span className="text-slate-400 uppercase text-[9px] group-hover:text-white transition-colors">杆件截面积 (Area)</span>
+                    <span className="text-sm font-bold tracking-tighter">{(results.A * 1e4).toFixed(2)} <span className="text-[10px] opacity-40 font-normal">cm²</span></span>
+                  </div>
+                  <div className="flex justify-between items-baseline group">
+                    <span className="text-slate-400 uppercase text-[9px] group-hover:text-white transition-colors">截面惯性矩 (Mom. I)</span>
+                    <span className="text-sm font-bold tracking-tighter">{(results.I * 1e8).toFixed(2)} <span className="text-[10px] opacity-40 font-normal">cm⁴</span></span>
+                  </div>
+                  <div className="flex justify-between items-baseline group">
+                    <span className="text-slate-400 uppercase text-[9px] group-hover:text-white transition-colors">结构柔度 (Slenderness)</span>
+                    <span className={`text-sm font-bold tracking-tighter ${results.lambda > results.lambda_p ? 'text-rose-400' : 'text-emerald-400'}`}>{results.lambda.toFixed(1)}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline group pt-2 border-t border-white/10">
+                    <span className="text-slate-400 uppercase text-[9px] group-hover:text-white transition-colors">临界应力 (Crit. Stress)</span>
+                    <span className="text-sm font-bold text-blue-400 tracking-tighter">{(results.sigma_cr / 1e6).toFixed(1)} <span className="text-[10px] opacity-40 font-normal">MPa</span></span>
+                  </div>
+               </div>
+            </div>
+
+            {/* Mini Chart Area */}
+            <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100">
+               <div className="text-[10px] font-black mb-6 text-slate-400 uppercase tracking-widest flex items-center justify-between">
+                 <span>稳定性曲线图象</span>
+                 <span className="text-[8px] bg-slate-100 px-2 py-0.5 rounded text-slate-500">REALTIME</span>
+               </div>
+               <div className="h-44 w-full text-[8px] font-mono">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={curveData}>
+                      <CartesianGrid strokeDasharray="5 5" vertical={false} stroke="#f1f5f9" />
+                      <XAxis dataKey="lambda" hide />
+                      <YAxis hide domain={[0, 'auto']} />
+                      <ReferenceLine x={results.lambda} stroke="#F97316" strokeWidth={3} strokeLinecap="round" />
+                      <Line type="monotone" dataKey="sigma" stroke="#2563EB" strokeWidth={4} dot={false} isAnimationActive={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+               </div>
+               <div className="mt-4 text-[9px] text-center text-slate-400 font-bold uppercase tracking-wider bg-slate-50 py-2 rounded-xl">
+                  当前状态: <span className="text-slate-900">{results.bucklingType === 'large' ? '高柔度/Euler' : results.bucklingType === 'medium' ? '中柔度/直线' : '极低柔度/强度'}</span>
+               </div>
+            </div>
+
+            <div className="h-16"></div> {/* Bottom navigation buffer */}
+          </section>
+        </div>
+
+        {/* Bottom Navigation Tab Bar (APK Style) */}
+        <nav className="h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 pb-4 shrink-0 z-30">
+          <button className="flex flex-col items-center gap-1.5 flex-1 transition-all transform active:scale-90 text-blue-600">
+            <div className="w-10 h-10 bg-blue-50 rounded-2xl flex items-center justify-center">
+              <Scale size={22} />
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-widest">分析</span>
+          </button>
+          <button className="flex flex-col items-center gap-1.5 flex-1 transition-all transform active:scale-90 text-slate-400">
+            <div className="w-10 h-10 flex items-center justify-center">
+              <Info size={22} />
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-widest">理论书</span>
+          </button>
+          <button className="flex flex-col items-center gap-1.5 flex-1 transition-all transform active:scale-90 text-slate-400">
+            <div className="w-10 h-10 flex items-center justify-center relative">
+              <Lightbulb size={22} />
+              <div className="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full border-2 border-white translate-x-1 translate-y-1"></div>
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-widest">引导台</span>
+          </button>
+        </nav>
+
+        {/* Home Indicator / Gesture Bar */}
+        <div className="absolute bottom-2 inset-x-0 flex justify-center pointer-events-none">
+           <div className="h-1.5 w-32 bg-slate-900/5 rounded-full overflow-hidden">
+              <div className="h-full w-full bg-slate-900 opacity-20"></div>
+           </div>
         </div>
       </div>
     </div>
