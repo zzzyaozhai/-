@@ -1,15 +1,12 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
-  "main": "main.cjs",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build && cp dist/index.html Mechanics_Offline_App.html && mkdir -p public && cp dist/index.html public/Mechanics_Offline_App.html",
-    "electron:build": "vite build && electron-builder --win",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -43,21 +40,5 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
     "vite-plugin-singlefile": "^2.3.3"
-  },
-  "build": {
-    "appId": "com.mechanics.app",
-    "productName": "MechanicsApp",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "main.cjs"
-    ],
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    }
   }
 }
