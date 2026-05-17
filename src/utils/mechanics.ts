@@ -39,6 +39,16 @@ export const materials: MaterialProps[] = [
     a: 30e6,
     b: 0.15e6,
     density: 500,
+  },
+  {
+    id: 'Plastic',
+    name: '塑料 (PVC)',
+    E: 3.2e9,
+    sigma_p: 35e6,
+    sigma_s: 45e6,
+    a: 45e6,
+    b: 0.1e6,
+    density: 1380,
   }
 ];
 
